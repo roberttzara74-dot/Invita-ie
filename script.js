@@ -6,26 +6,11 @@
 
   /* ---------------------------------------------------------
      0. EMAILJS CONFIG
-     ---------------------------------------------------------
-     Site-ul static (GitHub Pages) nu poate trimite emailuri direct,
-     așa că folosim EmailJS (gratuit până la un anumit volum).
-
-     PAȘI DE CONFIGURARE (o singură dată):
-     1. Creează cont pe https://www.emailjs.com
-     2. Adaugă un "Email Service" (ex: Gmail) și copiază SERVICE_ID
-     3. Creează un "Email Template" cu variabilele {{message}} și
-        {{to_email}}, apoi copiază TEMPLATE_ID
-     4. Din "Account" > "General" copiază PUBLIC_KEY
-     5. Completează cele 3 valori mai jos.
-
-     Până când sunt completate, notificarea prin email este
-     dezactivată silențios (nu afectează restul site-ului și nu
-     arată nicio eroare Andreei) — se scrie doar un mesaj în consolă.
-  --------------------------------------------------------- */
+     --------------------------------------------------------- */
   const EMAILJS_CONFIG = {
-    SERVICE_ID:  'YOUR_SERVICE_ID',
-    TEMPLATE_ID: 'YOUR_TEMPLATE_ID',
-    PUBLIC_KEY:  'YOUR_PUBLIC_KEY',
+    SERVICE_ID:  'service_l3pfd98',
+    TEMPLATE_ID: 'template_gmfrogc',
+    PUBLIC_KEY:  'xC4V0Ids8yJLvw0AT',
     NOTIFY_EMAIL: 'roberttzara74@gmail.com'
   };
 
@@ -40,20 +25,28 @@
   } else {
     console.info(
       '[Andreea site] EmailJS nu este configurat încă — notificarea ' +
-      'prin email va fi omisă. Vezi comentariul EMAILJS_CONFIG din script.js.'
+      'prin email va fi omisă.'
     );
   }
 
   function sendConfirmationEmail(choiceLabel) {
     if (!emailJsReady) return;
-    emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, {
-      to_email: EMAILJS_CONFIG.NOTIFY_EMAIL,
-      message: `Andreea a confirmat invitația! Alegere: "${choiceLabel}"`,
-      choice: choiceLabel,
-      time: new Date().toLocaleString('ro-RO')
-    }).catch((err) => {
-      console.warn('[Andreea site] Trimiterea emailului de notificare a eșuat:', err);
-    });
+    
+    // Potrivire exactă cu variabilele create în template-ul tău EmailJS
+    const templateParams = {
+      name: 'Andreea',
+      title: 'Răspuns Invitație',
+      message: `A ales opțiunea: "${choiceLabel}" la data de ${new Date().toLocaleString('ro-RO')}`,
+      to_email: EMAILJS_CONFIG.NOTIFY_EMAIL
+    };
+
+    emailjs.send(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, templateParams)
+      .then((res) => {
+        console.log('[Andreea site] Email trimis cu succes!', res.status, res.text);
+      })
+      .catch((err) => {
+        console.warn('[Andreea site] Trimiterea emailului de notificare a eșuat:', err);
+      });
   }
 
   /* ---------------------------------------------------------
@@ -111,7 +104,7 @@
     }
   }
 
-  // Attempt autoplay as soon as possible (works on some desktop browsers)
+  // Attempt autoplay as soon as possible
   window.addEventListener('DOMContentLoaded', tryAutoplay);
 
   function openInvitation() {
@@ -142,8 +135,6 @@
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openInvitation(); }
   });
 
-  // Also unlock audio silently on first tap anywhere, in case the seal
-  // interaction alone isn't enough on some mobile browsers.
   document.body.addEventListener('pointerdown', () => {
     if (bgAudio.paused) bgAudio.play().catch(() => {});
   }, { once: true });
@@ -228,7 +219,6 @@
       celebrationRunning = true;
       requestAnimationFrame(tickCelebration);
     }
-    // Keep gently spawning a few for a while for a richer moment
     let spawnCount = 0;
     const spawner = setInterval(() => {
       for (let i = 0; i < 6; i++) particles.push(makeParticle());
@@ -281,6 +271,6 @@
     }
   }
 
-  /* Lock initial scroll until invitation is opened, for a cleaner intro */
+  /* Lock initial scroll until invitation is opened */
   document.body.style.overflow = 'hidden';
 })();
