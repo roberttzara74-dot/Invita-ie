@@ -32,7 +32,6 @@
   function sendConfirmationEmail(choiceLabel) {
     if (!emailJsReady) return;
     
-    // Potrivire exactă cu variabilele create în template-ul tău EmailJS
     const templateParams = {
       name: 'Andreea',
       title: 'Răspuns Invitație',
@@ -104,14 +103,12 @@
     }
   }
 
-  // Attempt autoplay as soon as possible
   window.addEventListener('DOMContentLoaded', tryAutoplay);
 
   function openInvitation() {
     if (unlocked) return;
     unlocked = true;
 
-    // Unlock / start audio on this first guaranteed user gesture
     bgAudio.volume = 0.9;
     bgAudio.play().catch(() => {});
 
@@ -271,6 +268,5 @@
     }
   }
 
-  /* Lock initial scroll until invitation is opened */
   document.body.style.overflow = 'hidden';
 })();
